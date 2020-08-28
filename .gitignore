@@ -148,3 +148,7 @@ fonts/win/*
 
 # tensorboard
 logs/*
+
+
+# ignore the speech data
+speech_data
