@@ -1,0 +1,5 @@
+{
+    "build": {
+        "flags": "-Ithird_party/ruy -Ithird_party/gemmlowp -Ithird_party/flatbuffers/include -DNDEBUG -Ofast -Wno-unused-variable -Wno-strict-aliasing -Wno-return-type -Wno-strict-aliasing -Wno-return-type -Wno-strict-aliasing"
+    }
+}

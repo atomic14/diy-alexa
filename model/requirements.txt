@@ -1,0 +1,11 @@
+tensorflow
+matplotlib
+pandas
+numpy
+jupyter
+scipy
+tensorflow-io
+tqdm
+pyaudio
+jupyter_contrib_nbextensions
+jupyter_nbextensions_configurator
