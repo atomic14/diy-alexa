@@ -152,3 +152,8 @@ logs/*
 
 # ignore the speech data
 speech_data
+*.npz
+
+# models
+*.model
+*.tflite

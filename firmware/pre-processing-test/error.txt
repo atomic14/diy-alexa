@@ -1,0 +1,29 @@
+Processing esp32doit-devkit-v1 (platform: espressif32; board: esp32doit-devkit-v1; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32doit-devkit-v1.html
+PLATFORM: Espressif 32 (1.12.4) > DOIT ESP32 DEVKIT V1
+HARDWARE: ESP32 240MHz, 320KB RAM, 4MB Flash
+DEBUG: Current (esp-prog) External (esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-arduinoespressif32 3.10004.200129 (1.0.4) 
+ - tool-esptoolpy 1.20600.0 (2.6.0) 
+ - toolchain-xtensa32 2.50200.80 (5.2.0)
+LDF: Library Dependency Finder -> http://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 49 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- <FS> 1.0
+|-- <SPIFFS> 1.0
+|   |-- <FS> 1.0
+|-- <TensorFlowLite_ESP32> 0.6.0
+Building in release mode
+Compiling .pio/build/esp32doit-devkit-v1/src/tfmicro/tensorflow/lite/core/api/flatbuffer_conversions.cc.o
+Compiling .pio/build/esp32doit-devkit-v1/src/tfmicro/tensorflow/lite/core/api/op_resolver.cc.o
+Compiling .pio/build/esp32doit-devkit-v1/src/tfmicro/tensorflow/lite/core/api/tensor_utils.cc.o
+Compiling .pio/build/esp32doit-devkit-v1/src/tfmicro/tensorflow/lite/kernels/kernel_util.cc.o
+Compiling .pio/build/esp32doit-devkit-v1/src/tfmicro/tensorflow/lite/micro/all_ops_resolver.cc.o
+Compiling .pio/build/esp32doit-devkit-v1/src/tfmicro/tensorflow/lite/micro/kernels/activations.cc.o
+Compiling .pio/build/esp32doit-devkit-v1/src/tfmicro/tensorflow/lite/micro/kernels/add.cc.o
+Compiling .pio/build/esp32doit-devkit-v1/src/tfmicro/tensorflow/lite/micro/kernels/arg_min_max.cc.o
