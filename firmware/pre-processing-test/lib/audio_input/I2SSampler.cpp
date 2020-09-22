@@ -1,10 +1,7 @@
 
-#include <Arduino.h>
 #include "I2SSampler.h"
-#include "driver/i2s.h"
-
-// 10 buffers - 1 second + an extra 300 ms so we don't overwrite data while processing
-#define AUDIO_BUFFER_COUNT 13
+#include <driver/i2s.h>
+#include <algorithm>
 
 void I2SSampler::addSample(int16_t sample)
 {
@@ -36,7 +33,7 @@ void i2sReaderTask(void *param)
     {
         // wait for some data to arrive on the queue
         i2s_event_t evt;
-        if (xQueueReceive(sampler->m_i2sQueue, &evt, portMAX_DELAY) == pdPASS)
+        if (xQueueReceive(sampler->m_i2s_queue, &evt, portMAX_DELAY) == pdPASS)
         {
             if (evt.type == I2S_EVENT_RX_DONE)
             {
@@ -55,17 +52,23 @@ void i2sReaderTask(void *param)
     }
 }
 
-void I2SSampler::start(i2s_port_t i2s_port, i2s_config_t &i2s_config, TaskHandle_t processor_task_handle)
+I2SSampler::I2SSampler(int audio_buffer_segments)
 {
-    m_i2s_port = i2s_port;
-    m_processor_task_handle = processor_task_handle;
+    m_audio_buffer_segments = audio_buffer_segments;
     // allocate the audio buffers
-    for (int i = 0; i < AUDIO_BUFFER_COUNT; i++)
+    m_audio_buffers = static_cast<AudioBuffer **>(malloc(sizeof(AudioBuffer *) * m_audio_buffer_segments));
+    for (int i = 0; i < m_audio_buffer_segments; i++)
     {
         m_audio_buffers[i] = new AudioBuffer();
     }
     m_audio_buffer_pos = 0;
     m_current_audio_buffer = 0;
+}
+
+void I2SSampler::start(i2s_port_t i2s_port, i2s_config_t &i2s_config, TaskHandle_t processor_task_handle)
+{
+    m_i2s_port = i2s_port;
+    m_processor_task_handle = processor_task_handle;
     //install and start i2s driver
     i2s_driver_install(m_i2s_port, &i2s_config, 4, &m_i2s_queue);
     // set up the I2S configuration from the subclass

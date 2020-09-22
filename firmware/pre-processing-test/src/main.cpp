@@ -11,9 +11,13 @@
 void setup()
 {
   Serial.begin(115200);
-  delay(2000);
-  Serial.println("Starting test");
+  delay(1000);
+  Serial.println("Starting up");
+  // create the processing task
+}
 
+void testWavFile()
+{
   NeuralNetwork *nn = new NeuralNetwork();
 
   Serial.println("Created Neral Net");

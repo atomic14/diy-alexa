@@ -1,9 +1,8 @@
-#include <Arduino.h>
+#include "ADCSampler.h"
 #include "driver/i2s.h"
 #include "driver/adc.h"
-#include "ADCSampler.h"
 
-ADCSampler::ADCSampler(adc_unit_t adcUnit, adc1_channel_t adcChannel)
+ADCSampler::ADCSampler(int audio_buffer_segments, adc_unit_t adcUnit, adc1_channel_t adcChannel) : I2SSampler(audio_buffer_segments)
 {
     m_adcUnit = adcUnit;
     m_adcChannel = adcChannel;

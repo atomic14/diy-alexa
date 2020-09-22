@@ -4,6 +4,8 @@
 #include <SPIFFS.h>
 #include <FS.h>
 
+class File;
+
 class WAVFileReader
 {
 private:

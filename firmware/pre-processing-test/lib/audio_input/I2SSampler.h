@@ -1,10 +1,12 @@
 #ifndef __sampler_base_h__
 #define __sampler_base_h__
 
-#include <Arduino.h>
-#include "driver/i2s.h"
+#include <FreeRTOS/FreeRTOS.h>
+#include <FreeRTOS/task.h>
+#include <driver/i2s.h>
 
-#define AUDIO_BUFFER_COUNT 11
+// 10 buffers - 1 second + an extra 300 ms so we don't overwrite data while processing
+#define AUDIO_BUFFER_COUNT 13
 
 class AudioBuffer
 {
@@ -26,7 +28,8 @@ class I2SSampler
 {
 private:
     // audio buffers
-    AudioBuffer *m_audio_buffers[AUDIO_BUFFER_COUNT];
+    int m_audio_buffer_segments;
+    AudioBuffer **m_audio_buffers;
     // current position in the audio buffer
     int m_audio_buffer_pos = 0;
     // current audio buffer
@@ -50,6 +53,7 @@ protected:
     }
 
 public:
+    I2SSampler(int audio_buffer_segments);
     void start(i2s_port_t i2s_port, i2s_config_t &i2s_config, TaskHandle_t processor_task_handle);
 
     friend void i2sReaderTask(void *param);
