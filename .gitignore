@@ -157,3 +157,4 @@ speech_data
 # models
 *.model
 *.tflite
+logs
