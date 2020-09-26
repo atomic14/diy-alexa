@@ -2,7 +2,7 @@
 #include "driver/i2s.h"
 #include "soc/i2s_reg.h"
 
-I2SMEMSSampler::I2SMEMSSampler(int audio_buffer_segments, i2s_pin_config_t &i2sPins, bool fixSPH0645) : I2SSampler(audio_buffer_segments)
+I2SMEMSSampler::I2SMEMSSampler(i2s_pin_config_t &i2sPins, bool fixSPH0645) : I2SSampler()
 {
     m_i2sPins = i2sPins;
     m_fixSPH0645 = fixSPH0645;
@@ -25,7 +25,6 @@ void I2SMEMSSampler::processI2SData(uint8_t *i2sData, size_t bytesRead)
     int32_t *samples = (int32_t *)i2sData;
     for (int i = 0; i < bytesRead / 4; i++)
     {
-        // you may need to vary the >> 11 to fit your volume - ideally we'd have some kind of AGC here
         addSample(samples[i] >> 11);
     }
 }

@@ -1,25 +1,15 @@
 #ifndef __sampler_base_h__
 #define __sampler_base_h__
-
 #include <FreeRTOS/FreeRTOS.h>
 #include <FreeRTOS/task.h>
 #include <driver/i2s.h>
+#include <algorithm>
 
 // 10 buffers - 1 second + an extra 300 ms so we don't overwrite data while processing
 #define AUDIO_BUFFER_COUNT 13
 
-class AudioBuffer
-{
-public:
-    int total;
-    int16_t max;
-    int16_t samples[160];
-    AudioBuffer()
-    {
-        total = 0;
-        max = 0;
-    }
-};
+class AudioBuffer;
+class RingBufferAccessor;
 
 /**
  * Base Class for both the ADC and I2S sampler
@@ -28,8 +18,8 @@ class I2SSampler
 {
 private:
     // audio buffers
-    int m_audio_buffer_segments;
-    AudioBuffer **m_audio_buffers;
+    AudioBuffer *m_audio_buffers[AUDIO_BUFFER_COUNT];
+    RingBufferAccessor *m_write_ring_buffer_accessor;
     // current position in the audio buffer
     int m_audio_buffer_pos = 0;
     // current audio buffer
@@ -53,8 +43,10 @@ protected:
     }
 
 public:
-    I2SSampler(int audio_buffer_segments);
+    I2SSampler();
     void start(i2s_port_t i2s_port, i2s_config_t &i2s_config, TaskHandle_t processor_task_handle);
+
+    RingBufferAccessor *getRingBufferReader();
 
     friend void i2sReaderTask(void *param);
 };

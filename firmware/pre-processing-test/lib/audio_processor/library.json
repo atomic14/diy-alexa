@@ -1,5 +1,5 @@
 {
     "build": {
-        "flags": "-Isrc/kissfft -I."
+        "flags": "-Isrc/kissfft -I. -Ofast"
     }
 }

@@ -8,26 +8,31 @@
 
 class HammingWindow;
 
+class RingBufferAccessor;
+
 class AudioProcessor
 {
 private:
+    int m_audio_length;
     int m_window_size;
+    int m_step_size;
+    int m_pooling_size;
     size_t m_fft_size;
     float *m_fft_input;
     int m_energy_size;
     int m_pooled_energy_size;
-    int m_pooling_size;
     float *m_energy;
     kiss_fft_cpx *m_fft_output;
     kiss_fftr_cfg m_cfg;
 
     HammingWindow *m_hamming_window;
 
+    void get_spectrogram_segment(float *output_spectrogram_row);
+
 public:
-    AudioProcessor(int window_size, int pooling_size);
+    AudioProcessor(int audio_length, int window_size, int step_size, int pooling_size);
     ~AudioProcessor();
-    float *run(float *input);
-    int outputSize() { return m_pooled_energy_size; }
+    void get_spectrogram(RingBufferAccessor *reader, float *output_spectrogram);
 };
 
 #endif

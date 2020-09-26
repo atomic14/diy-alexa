@@ -14,7 +14,7 @@ protected:
     void processI2SData(uint8_t *i2sData, size_t bytesRead);
 
 public:
-    ADCSampler(int audio_buffer_segments, adc_unit_t adc_unit, adc1_channel_t adc_channel);
+    ADCSampler(adc_unit_t adc_unit, adc1_channel_t adc_channel);
 };
 
 #endif

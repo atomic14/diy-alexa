@@ -1,13 +1,17 @@
 #include <stdlib.h>
+#include <algorithm>
 #include "AudioProcessor.h"
 #include "HammingWindow.h"
+#include "RingBuffer.h"
 
 #define EPSILON 1e-6
 
-AudioProcessor::AudioProcessor(int window_size, int pooling_size)
+AudioProcessor::AudioProcessor(int audio_length, int window_size, int step_size, int pooling_size)
 {
-    m_pooling_size = pooling_size;
+    m_audio_length = audio_length;
     m_window_size = window_size;
+    m_step_size = step_size;
+    m_pooling_size = pooling_size;
     m_fft_size = 1;
     while (m_fft_size < window_size)
     {
@@ -36,18 +40,8 @@ AudioProcessor::~AudioProcessor()
 }
 
 // takes a normalised array of input samples of window_size length
-float *AudioProcessor::run(float *input)
+void AudioProcessor::get_spectrogram_segment(float *output)
 {
-    size_t i;
-    for (i = 0; i < m_window_size; i++)
-    {
-        m_fft_input[i] = input[i];
-    }
-    // Zero out whatever else remains in the top part of the input.
-    for (; i < m_fft_size; i++)
-    {
-        m_fft_input[i] = 0;
-    }
     // apply the hamming window to the samples
     m_hamming_window->applyWindow(m_fft_input);
     // do the fft
@@ -65,7 +59,7 @@ float *AudioProcessor::run(float *input)
     }
     // reduce the size of the output by pooling with average and same padding
     float *output_src = m_energy;
-    float *output_dst = m_energy;
+    float *output_dst = output;
     for (int i = 0; i < m_energy_size; i += m_pooling_size)
     {
         float average = 0;
@@ -83,7 +77,48 @@ float *AudioProcessor::run(float *input)
     // now take the log to give us reasonable values to feed into the network
     for (int i = 0; i < m_pooled_energy_size; i++)
     {
-        m_energy[i] = log10f(m_energy[i] + EPSILON);
+        output[i] = log10f(output[i] + EPSILON);
     }
-    return m_energy;
+}
+
+void AudioProcessor::get_spectrogram(RingBufferAccessor *reader, float *output_spectrogram)
+{
+    int startIndex = reader->getIndex();
+    // get the mean value of the samples
+    float mean = 0;
+    for (int i = 0; i < m_audio_length; i++)
+    {
+        mean += reader->getCurrentSample();
+        reader->moveToNextSample();
+    }
+    mean /= m_audio_length;
+    // get the absolute max value of the samples taking into account the mean value
+    reader->setIndex(startIndex);
+    float max = 0;
+    for (int i = 0; i < m_audio_length; i++)
+    {
+        max = std::max(max, fabsf(((float)reader->getCurrentSample()) - mean));
+        reader->moveToNextSample();
+    }
+    // extract windows of samples moving forward by step size each time and compute the spectrum of the window
+    for (int window_start = startIndex; window_start < startIndex + 16000 - m_window_size; window_start += m_step_size)
+    {
+        // move the reader to the start of the window
+        reader->setIndex(window_start);
+        // read samples from the reader into the fft input normalising them by subtracting the mean and dividing by the absolute max
+        for (int i = 0; i < m_window_size; i++)
+        {
+            m_fft_input[i] = ((float)reader->getCurrentSample() - mean) / max;
+            reader->moveToNextSample();
+        }
+        // zero out whatever else remains in the top part of the input.
+        for (int i = m_window_size; i < m_fft_size; i++)
+        {
+            m_fft_input[i] = 0;
+        }
+        // compute the spectrum for the window of samples and write it to the output
+        get_spectrogram_segment(output_spectrogram);
+        // move to the next row of the output spectrogram
+        output_spectrogram += m_pooled_energy_size;
+    }
 }

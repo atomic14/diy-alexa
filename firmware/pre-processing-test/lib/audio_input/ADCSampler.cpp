@@ -2,7 +2,7 @@
 #include "driver/i2s.h"
 #include "driver/adc.h"
 
-ADCSampler::ADCSampler(int audio_buffer_segments, adc_unit_t adcUnit, adc1_channel_t adcChannel) : I2SSampler(audio_buffer_segments)
+ADCSampler::ADCSampler(adc_unit_t adcUnit, adc1_channel_t adcChannel) : I2SSampler()
 {
     m_adcUnit = adcUnit;
     m_adcChannel = adcChannel;

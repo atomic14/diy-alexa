@@ -1,27 +1,16 @@
-
+#include <Arduino.h>
 #include "I2SSampler.h"
 #include <driver/i2s.h>
 #include <algorithm>
+#include "RingBuffer.h"
 
 void I2SSampler::addSample(int16_t sample)
 {
     // store the sample
-    AudioBuffer *audio_buffer = m_audio_buffers[m_current_audio_buffer];
-    audio_buffer->samples[m_audio_buffer_pos] = sample;
-    audio_buffer->max = std::max(audio_buffer->max, sample);
-    audio_buffer->total += sample;
-    // move to the next sample in the buffer
-    m_audio_buffer_pos++;
-    // have we filled the current buffer?
-    if (m_audio_buffer_pos == 160)
+    m_write_ring_buffer_accessor->setCurrentSample(sample);
+    if (m_write_ring_buffer_accessor->moveToNextSample())
     {
-        // move to the next buffer wrapping around to the start of the buffers
-        m_audio_buffer_pos = 0;
-        m_current_audio_buffer = (m_current_audio_buffer + 1) % AUDIO_BUFFER_COUNT;
-        // reset the max and total ready to receive new samples
-        m_audio_buffers[m_current_audio_buffer]->max = 0;
-        m_audio_buffers[m_current_audio_buffer]->total = 0;
-        // trigger the processor task
+        // trigger the processor task as we've filled a buffer
         xTaskNotify(m_processor_task_handle, 1, eSetBits);
     }
 }
@@ -52,27 +41,33 @@ void i2sReaderTask(void *param)
     }
 }
 
-I2SSampler::I2SSampler(int audio_buffer_segments)
+I2SSampler::I2SSampler()
 {
-    m_audio_buffer_segments = audio_buffer_segments;
     // allocate the audio buffers
-    m_audio_buffers = static_cast<AudioBuffer **>(malloc(sizeof(AudioBuffer *) * m_audio_buffer_segments));
-    for (int i = 0; i < m_audio_buffer_segments; i++)
+    for (int i = 0; i < AUDIO_BUFFER_COUNT; i++)
     {
         m_audio_buffers[i] = new AudioBuffer();
     }
-    m_audio_buffer_pos = 0;
-    m_current_audio_buffer = 0;
+    m_write_ring_buffer_accessor = new RingBufferAccessor(m_audio_buffers, AUDIO_BUFFER_COUNT);
 }
 
 void I2SSampler::start(i2s_port_t i2s_port, i2s_config_t &i2s_config, TaskHandle_t processor_task_handle)
 {
+    Serial.println("Starting i2s");
     m_i2s_port = i2s_port;
     m_processor_task_handle = processor_task_handle;
     //install and start i2s driver
     i2s_driver_install(m_i2s_port, &i2s_config, 4, &m_i2s_queue);
     // set up the I2S configuration from the subclass
     configureI2S();
-    // start a task to read samples from the ADC
-    xTaskCreatePinnedToCore(i2sReaderTask, "i2s Reader Task", 4096, this, 1, &m_reader_task_handle, 0);
+    // start a task to read samples
+    xTaskCreate(i2sReaderTask, "i2s Reader Task", 4096, this, 1, &m_reader_task_handle);
+}
+
+RingBufferAccessor *I2SSampler::getRingBufferReader()
+{
+    RingBufferAccessor *reader = new RingBufferAccessor(m_audio_buffers, AUDIO_BUFFER_COUNT);
+    // place the reader 200ms after the writer so we have some leeway in processing time
+    reader->setIndex(m_write_ring_buffer_accessor->getIndex() + 1600 * 2);
+    return reader;
 }
