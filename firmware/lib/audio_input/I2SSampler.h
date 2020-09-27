@@ -5,11 +5,9 @@
 #include <driver/i2s.h>
 #include <algorithm>
 
+#include "RingBuffer.h"
 // 10 buffers - 1 second + an extra 300 ms so we don't overwrite data while processing
 #define AUDIO_BUFFER_COUNT 13
-
-class AudioBuffer;
-class RingBufferAccessor;
 
 /**
  * Base Class for both the ADC and I2S sampler
@@ -20,8 +18,6 @@ private:
     // audio buffers
     AudioBuffer *m_audio_buffers[AUDIO_BUFFER_COUNT];
     RingBufferAccessor *m_write_ring_buffer_accessor;
-    // current position in the audio buffer
-    int m_audio_buffer_pos = 0;
     // current audio buffer
     int m_current_audio_buffer;
     // I2S reader task
@@ -47,6 +43,15 @@ public:
     void start(i2s_port_t i2s_port, i2s_config_t &i2s_config, TaskHandle_t processor_task_handle);
 
     RingBufferAccessor *getRingBufferReader();
+
+    int getCurrentWritePosition()
+    {
+        return m_write_ring_buffer_accessor->getIndex();
+    }
+    int getRingBufferSize()
+    {
+        return AUDIO_BUFFER_COUNT * SAMPLE_BUFFER_SIZE;
+    }
 
     friend void i2sReaderTask(void *param);
 };

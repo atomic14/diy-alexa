@@ -1,17 +1,17 @@
 #ifndef _application_h_
 #define _applicaiton_h_
 
+#include "state_machine/States.h"
+
 class I2SSampler;
-class NeuralNetwork;
-class AudioProcessor;
+class State;
 
 class Application
 {
 private:
-    I2SSampler *m_sample_provider;
-    NeuralNetwork *m_nn;
-    float *m_input_buffer;
-    AudioProcessor *m_audio_processor;
+    State *m_detect_wake_word_state;
+    State *m_recognise_command_state;
+    State *m_current_state;
 
 public:
     Application(I2SSampler *sample_provider);

@@ -1,6 +1,7 @@
 #include <Arduino.h>
-#include <esp_task_wdt.h>
+#include <WiFi.h>
 #include <driver/i2s.h>
+#include <esp_task_wdt.h>
 #include "I2SMEMSSampler.h"
 #include "ADCSampler.h"
 #include "config.h"
@@ -44,10 +45,6 @@ i2s_pin_config_t i2sPins = {
 // This task does all the heavy lifting for our application
 void applicationTask(void *param)
 {
-  ledcSetup(0, 10000, 8);
-  ledcAttachPin(2, 0);
-  ledcWrite(0, 0);
-
   Application *application = static_cast<Application *>(param);
 
   const TickType_t xMaxBlockTime = pdMS_TO_TICKS(100);
@@ -67,12 +64,20 @@ void setup()
   Serial.begin(115200);
   delay(1000);
   Serial.println("Starting up");
+  // start up wifi
+  // launch WiFi
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PSWD);
+  if (WiFi.waitForConnectResult() != WL_CONNECTED)
+  {
+    Serial.println("Connection Failed! Rebooting...");
+    delay(5000);
+    ESP.restart();
+  }
+  // make sure we don't get killed for our long running tasks
+  esp_task_wdt_init(5, true);
 
-  // input from analog microphones such as the MAX9814 or MAX4466
-  // internal analog to digital converter sampling using i2s
-  // create our samplers
-  // adcSampler = new ADCSampler(ADC_UNIT_1, ADC1_CHANNEL_7);
-
+  // start up the I2S input (from either an I2S microphone or Analogue microphone via the ADC)
 #ifdef USE_I2S_MIC_INPUT
   // Direct i2s input from INMP441 or the SPH0645
   I2SSampler *i2sSampler = new I2SMEMSSampler(i2sPins, false);

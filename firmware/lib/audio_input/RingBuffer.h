@@ -1,7 +1,7 @@
 #ifndef _ring_buffer_h_
 #define _ring_buffer_h_
 
-#include <stdlib.h>
+#include <string.h>
 
 #define SAMPLE_BUFFER_SIZE 1600
 

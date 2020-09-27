@@ -1,5 +1,5 @@
 {
     "build": {
-        "flags": "-Ofast"
+        "flags": "-Os"
     }
 }
