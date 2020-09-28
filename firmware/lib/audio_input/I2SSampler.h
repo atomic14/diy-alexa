@@ -6,8 +6,8 @@
 #include <algorithm>
 
 #include "RingBuffer.h"
-// 10 buffers - 1 second + an extra 300 ms so we don't overwrite data while processing
-#define AUDIO_BUFFER_COUNT 13
+// 10 buffers - 1 second + an extra 100 ms so we don't overwrite data while processing
+#define AUDIO_BUFFER_COUNT 11
 
 /**
  * Base Class for both the ADC and I2S sampler

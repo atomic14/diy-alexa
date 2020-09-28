@@ -12,6 +12,6 @@ A pre-trained model has already been generated and added to the firmware folder.
 
 ESP32 firmware built using Platform.io. This runs the neural network trying to detect the wake word (`Marvin`). When it hears the wake word it starts recording audio. This audio is then transmitted to the server for processing.
 
-## Server
+## Server - no longer needed
 
-This receives the audio from the ESP32 and sends it onto Microsoft's Language Understanding Cognitive Service (https://www.luis.ai/) to determine what the instruction is.
+This receives the audio from the ESP32 and sends it onto FaceBooks wit.ai

@@ -13,25 +13,30 @@
 
 RecogniseCommandState::RecogniseCommandState(I2SSampler *sample_provider)
 {
-    m_wifi_client = new WiFiClient();
     // save the sample provider for use later
     m_sample_provider = sample_provider;
 }
 void RecogniseCommandState::enterState()
 {
     m_last_audio_position = -1;
-    // stash the start time - we will limit ourselves to 5 seconds of data
-    m_start_time = millis();
-    m_elapsed_time = 0;
-
+    m_wifi_client = new WiFiClientSecure();
     m_wifi_client->connect(COMMAND_RECOGNITION_HOST, COMMAND_RECOGNITION_PORT);
     char authorization_header[100];
     snprintf(authorization_header, 100, "authorization: Bearer %s", COMMAND_RECOGNITION_ACCESS_KEY);
     m_wifi_client->println("POST /speech?v=20200927 HTTP/1.1");
+    char host_header[50];
+    snprintf(host_header, 50, "host: %s", COMMAND_RECOGNITION_HOST);
+    m_wifi_client->println(host_header);
     m_wifi_client->println(authorization_header);
     m_wifi_client->println("content-type: audio/raw; encoding=signed-integer; bits=16; rate=16000; endian=little");
     m_wifi_client->println("transfer-encoding: chunked");
     m_wifi_client->println();
+    // stash the start time - we will limit ourselves to 5 seconds of data
+    Serial.println("Ready for action");
+    m_start_time = millis();
+    m_elapsed_time = 0;
+    uint32_t free_ram = esp_get_free_heap_size();
+    Serial.printf("Free ram after connection %d\n", free_ram);
 }
 bool RecogniseCommandState::run()
 {
@@ -90,6 +95,7 @@ bool RecogniseCommandState::run()
                 if (read > 0)
                 {
                     buffer[read] = '\0';
+                    Serial.println(buffer);
                     if (buffer[0] == '\r')
                     {
                         break;
@@ -102,6 +108,12 @@ bool RecogniseCommandState::run()
                 Serial.print((char)m_wifi_client->read());
             }
             Serial.println();
+            // clean up the wifi client as it takes up a lot of RAM
+            delete m_wifi_client;
+            m_wifi_client = NULL;
+            uint32_t free_ram = esp_get_free_heap_size();
+            Serial.printf("Free ram after request %d\n", free_ram);
+
             return true;
         }
     }

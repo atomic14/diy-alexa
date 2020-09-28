@@ -67,7 +67,7 @@ void I2SSampler::start(i2s_port_t i2s_port, i2s_config_t &i2s_config, TaskHandle
 RingBufferAccessor *I2SSampler::getRingBufferReader()
 {
     RingBufferAccessor *reader = new RingBufferAccessor(m_audio_buffers, AUDIO_BUFFER_COUNT);
-    // place the reader 200ms after the writer so we have some leeway in processing time
-    reader->setIndex(m_write_ring_buffer_accessor->getIndex() + 1600 * 2);
+    // place the reaader
+    reader->setIndex((m_write_ring_buffer_accessor->getIndex() - 16000 + getRingBufferSize()) % getRingBufferSize());
     return reader;
 }
