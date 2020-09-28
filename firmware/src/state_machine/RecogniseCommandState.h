@@ -8,6 +8,8 @@
 class I2SSampler;
 class WiFiClient;
 class HTTPClient;
+class IndicatorLight;
+class Speaker;
 
 class RecogniseCommandState : public State
 {
@@ -20,8 +22,11 @@ private:
     unsigned long m_elapsed_time;
     int m_last_audio_position;
 
+    IndicatorLight *m_indicator_light;
+    Speaker *m_speaker;
+
 public:
-    RecogniseCommandState(I2SSampler *sample_provider);
+    RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Speaker *speaker);
     void enterState();
     bool run();
     void exitState();

@@ -2,16 +2,19 @@
 #include "Application.h"
 #include "state_machine/DetectWakeWordState.h"
 #include "state_machine/RecogniseCommandState.h"
+#include "IndicatorLight.h"
+#include "Speaker.h"
 
-Application::Application(I2SSampler *sample_provider)
+Application::Application(I2SSampler *sample_provider, I2SOutput *i2s_output)
 {
-    // use the build in LED as an indicator - we'll set it up as a pwm output so we can make it glow nicely
-    ledcSetup(0, 10000, 8);
-    ledcAttachPin(2, 0);
-    ledcWrite(0, 0);
-    // create the different application states
+    // detect wake word state - waits for the wake word to be detected
     m_detect_wake_word_state = new DetectWakeWordState(sample_provider);
-    m_recognise_command_state = new RecogniseCommandState(sample_provider);
+    // indicator light to show when we are listening
+    m_indicator_light = new IndicatorLight();
+    // speaker to play sounds in response to the user
+    m_speaker = new Speaker(i2s_output);
+    // command recongiser - streams audio to the server for recognition
+    m_recognise_command_state = new RecogniseCommandState(sample_provider, m_indicator_light, m_speaker);
     // start off in the detecting wakeword state
     m_current_state = m_detect_wake_word_state;
     m_current_state->enterState();

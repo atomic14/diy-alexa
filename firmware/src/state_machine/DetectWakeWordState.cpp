@@ -36,15 +36,14 @@ bool DetectWakeWordState::run()
     float *input_buffer = m_nn->getInputBuffer();
     // process the samples to get the spectrogram
     m_audio_processor->get_spectrogram(reader, input_buffer);
+    // finished with the sample reader
+    delete reader;
     // feed the watch dog
     vTaskDelay(10);
     // get the prediction for the spectrogram
     float output = m_nn->predict();
     long end = millis();
     m_average_detect_time = (end - start) * 0.1 + m_average_detect_time * 0.9;
-    // set the LED to glow depending on how strong the input is
-    ledcWrite(0, output * 255);
-    delete reader;
     // use quite a high threshold to prevent false positives
     if (output > 0.95)
     {

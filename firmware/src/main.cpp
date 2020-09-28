@@ -4,8 +4,10 @@
 #include <esp_task_wdt.h>
 #include "I2SMEMSSampler.h"
 #include "ADCSampler.h"
+#include "I2SOutput.h"
 #include "config.h"
 #include "Application.h"
+#include "SPIFFS.h"
 
 // i2s config for using the internal ADC
 i2s_config_t adcI2SConfig = {
@@ -35,12 +37,19 @@ i2s_config_t i2sMemsConfigBothChannels = {
     .tx_desc_auto_clear = false,
     .fixed_mclk = 0};
 
-// i2s pins
-i2s_pin_config_t i2sPins = {
+// i2s microphone pins
+i2s_pin_config_t i2s_mic_pins = {
     .bck_io_num = I2S_MIC_SERIAL_CLOCK,
     .ws_io_num = I2S_MIC_LEFT_RIGHT_CLOCK,
     .data_out_num = I2S_PIN_NO_CHANGE,
     .data_in_num = I2S_MIC_SERIAL_DATA};
+
+// i2s speaker pins
+i2s_pin_config_t i2s_speaker_pins = {
+    .bck_io_num = I2S_SPEAKER_SERIAL_CLOCK,
+    .ws_io_num = I2S_SPEAKER_LEFT_RIGHT_CLOCK,
+    .data_out_num = I2S_SPEAKER_SERIAL_DATA,
+    .data_in_num = I2S_PIN_NO_CHANGE};
 
 // This task does all the heavy lifting for our application
 void applicationTask(void *param)
@@ -74,27 +83,34 @@ void setup()
     delay(5000);
     ESP.restart();
   }
+  // startup SPIFFS for the wav files
+  SPIFFS.begin();
   // make sure we don't get killed for our long running tasks
-  esp_task_wdt_init(5, true);
+  esp_task_wdt_init(10, false);
 
   // start up the I2S input (from either an I2S microphone or Analogue microphone via the ADC)
 #ifdef USE_I2S_MIC_INPUT
   // Direct i2s input from INMP441 or the SPH0645
-  I2SSampler *i2sSampler = new I2SMEMSSampler(i2sPins, false);
+  I2SSampler *i2s_sampler = new I2SMEMSSampler(i2s_mic_pins, false);
 #else
   // Use the internal ADC
   I2SSampler *i2sSampler = new ADCSampler(ADC_UNIT_1, ADC_MIC_CHANNEL);
 #endif
 
-  Application *application = new Application(i2sSampler);
+  // start the i2s speaker output
+  I2SOutput *i2s_output = new I2SOutput();
+  i2s_output->start(I2S_NUM_1, i2s_speaker_pins);
+
+  // create our application
+  Application *application = new Application(i2s_sampler, i2s_output);
 
   // set up the i2s sample writer task
   TaskHandle_t applicationTaskHandle;
   xTaskCreate(applicationTask, "Application Task", 4096, application, 1, &applicationTaskHandle);
 
-  // start sampling from i2s device
+  // start sampling from i2s device - use I2S_NUM_0 as that's the one that supports the internal ADC
 #ifdef USE_I2S_MIC_INPUT
-  i2sSampler->start(I2S_NUM_0, i2sMemsConfigBothChannels, applicationTaskHandle);
+  i2s_sampler->start(I2S_NUM_0, i2sMemsConfigBothChannels, applicationTaskHandle);
 #else
   i2sSampler->start(I2S_NUM_0, adcI2SConfig, applicationTaskHandle);
 #endif
@@ -102,5 +118,5 @@ void setup()
 
 void loop()
 {
-  // put your main code here, to run repeatedly:
+  vTaskDelay(1000);
 }
