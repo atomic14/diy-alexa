@@ -10,6 +10,7 @@ class WiFiClient;
 class HTTPClient;
 class IndicatorLight;
 class Speaker;
+class IntentProcessor;
 
 class RecogniseCommandState : public State
 {
@@ -24,9 +25,10 @@ private:
 
     IndicatorLight *m_indicator_light;
     Speaker *m_speaker;
+    IntentProcessor *m_intent_processor;
 
 public:
-    RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Speaker *speaker);
+    RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Speaker *speaker, IntentProcessor *intent_processor);
     void enterState();
     bool run();
     void exitState();

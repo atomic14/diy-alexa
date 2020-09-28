@@ -1,24 +1,29 @@
 #include <Arduino.h>
 #include <WiFiClient.h>
 #include <HTTPClient.h>
+#include <ArduinoJson.h>
 #include "I2SSampler.h"
 #include "RingBuffer.h"
 #include "RecogniseCommandState.h"
 #include "IndicatorLight.h"
 #include "Speaker.h"
+#include "IntentProcessor.h"
 #include "../config.h"
+#include <string.h>
 
 #define WINDOW_SIZE 320
 #define STEP_SIZE 160
 #define POOLING_SIZE 6
 #define AUDIO_LENGTH 16000
 
-RecogniseCommandState::RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Speaker *speaker)
+RecogniseCommandState::RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Speaker *speaker, IntentProcessor *intent_processor)
 {
     // save the sample provider for use later
     m_sample_provider = sample_provider;
     m_indicator_light = indicator_light;
     m_speaker = speaker;
+    m_intent_processor = intent_processor;
+    m_wifi_client = NULL;
 }
 void RecogniseCommandState::enterState()
 {
@@ -45,7 +50,7 @@ void RecogniseCommandState::enterState()
 }
 bool RecogniseCommandState::run()
 {
-    if (!m_wifi_client->connected())
+    if (!m_wifi_client || !m_wifi_client->connected())
     {
         // no http client - something went wrong somewhere move to the next state as there's nothing for us to do
         Serial.println("Error - Attempt to run with no http client");
@@ -97,6 +102,8 @@ bool RecogniseCommandState::run()
             m_wifi_client->print("0\r\n");
             m_wifi_client->print("\r\n");
             // get the headers and the content length
+            int status = -1;
+            int content_length = 0;
             while (m_wifi_client->connected())
             {
                 int read = m_wifi_client->readBytesUntil('\n', buffer, 255);
@@ -104,18 +111,47 @@ bool RecogniseCommandState::run()
                 {
                     buffer[read] = '\0';
                     Serial.println(buffer);
+                    // blank line indicates the end of the headers
                     if (buffer[0] == '\r')
                     {
                         break;
                     }
-                    // Serial.println(buffer);
+                    if (strncmp("HTTP", buffer, 4) == 0)
+                    {
+                        sscanf(buffer, "HTTP/1.1 %d", &status);
+                    }
+                    else if (strncmp("Content-Length:", buffer, 15) == 0)
+                    {
+                        sscanf(buffer, "Content-Length: %d", &content_length);
+                    }
                 }
             }
-            while (m_wifi_client->connected() && m_wifi_client->available())
+            Serial.printf("Http status is %d with content length of %d\n", status, content_length);
+            if (status == 200)
             {
-                Serial.print((char)m_wifi_client->read());
+                StaticJsonDocument<500> filter;
+                filter["entities"]["device:device"][0]["value"] = true;
+                filter["entities"]["device:device"][0]["confidence"] = true;
+                filter["text"] = true;
+                filter["intents"][0]["name"] = true;
+                filter["intents"][0]["confidence"] = true;
+                filter["traits"]["wit$on_off"][0]["value"] = true;
+                filter["traits"]["wit$on_off"][0]["confidence"] = true;
+                StaticJsonDocument<500> doc;
+                deserializeJson(doc, *m_wifi_client, DeserializationOption::Filter(filter));
+                if (m_intent_processor->processIntent(doc))
+                {
+                    m_speaker->playOK();
+                }
+                else
+                {
+                    m_speaker->playCantDo();
+                }
             }
-            Serial.println();
+            else
+            {
+                m_speaker->playCantDo();
+            }
             // clean up the wifi client as it takes up a lot of RAM
             delete m_wifi_client;
             m_wifi_client = NULL;
@@ -124,7 +160,6 @@ bool RecogniseCommandState::run()
 
             // indicate that we are done
             m_indicator_light->setState(OFF);
-            m_speaker->playOK();
             return true;
         }
     }

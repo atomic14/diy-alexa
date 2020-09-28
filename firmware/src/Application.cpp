@@ -4,8 +4,9 @@
 #include "state_machine/RecogniseCommandState.h"
 #include "IndicatorLight.h"
 #include "Speaker.h"
+#include "IntentProcessor.h"
 
-Application::Application(I2SSampler *sample_provider, I2SOutput *i2s_output)
+Application::Application(I2SSampler *sample_provider, I2SOutput *i2s_output, IntentProcessor *intent_processor)
 {
     // detect wake word state - waits for the wake word to be detected
     m_detect_wake_word_state = new DetectWakeWordState(sample_provider);
@@ -14,7 +15,7 @@ Application::Application(I2SSampler *sample_provider, I2SOutput *i2s_output)
     // speaker to play sounds in response to the user
     m_speaker = new Speaker(i2s_output);
     // command recongiser - streams audio to the server for recognition
-    m_recognise_command_state = new RecogniseCommandState(sample_provider, m_indicator_light, m_speaker);
+    m_recognise_command_state = new RecogniseCommandState(sample_provider, m_indicator_light, m_speaker, intent_processor);
     // start off in the detecting wakeword state
     m_current_state = m_detect_wake_word_state;
     m_current_state->enterState();

@@ -8,6 +8,7 @@
 #include "config.h"
 #include "Application.h"
 #include "SPIFFS.h"
+#include "IntentProcessor.h"
 
 // i2s config for using the internal ADC
 i2s_config_t adcI2SConfig = {
@@ -101,8 +102,13 @@ void setup()
   I2SOutput *i2s_output = new I2SOutput();
   i2s_output->start(I2S_NUM_1, i2s_speaker_pins);
 
+  IntentProcessor *intent_processor = new IntentProcessor();
+  intent_processor->addDevice("kitchen", GPIO_NUM_5);
+  intent_processor->addDevice("bedroom", GPIO_NUM_21);
+  intent_processor->addDevice("table", GPIO_NUM_23);
+
   // create our application
-  Application *application = new Application(i2s_sampler, i2s_output);
+  Application *application = new Application(i2s_sampler, i2s_output, intent_processor);
 
   // set up the i2s sample writer task
   TaskHandle_t applicationTaskHandle;

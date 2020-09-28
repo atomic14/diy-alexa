@@ -16,6 +16,7 @@ public:
     WAVFileReader(const char *file_name, bool repeat = false);
     ~WAVFileReader();
     int getFrames(Frame_t *frames, int number_frames);
+    bool available();
     void reset();
 };
 

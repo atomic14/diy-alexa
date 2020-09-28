@@ -31,7 +31,7 @@ void i2sWriterTask(void *param)
                     if (availableBytes == 0)
                     {
                         // get some frames from the wave file - a frame consists of a 16 bit left and right sample
-                        if (output->m_sample_generator)
+                        if (output->m_sample_generator && output->m_sample_generator->available())
                         {
                             int frames_available = output->m_sample_generator->getFrames(frames, NUM_FRAMES_TO_SEND);
                             // how maby bytes do we now have to send
@@ -76,8 +76,9 @@ void I2SOutput::start(i2s_port_t i2sPort, i2s_pin_config_t &i2sPins)
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
         .dma_buf_count = 4,
         .dma_buf_len = 64,
-    };
-
+        .use_apll = false,
+        .tx_desc_auto_clear = true,
+        .fixed_mclk = 0};
     m_i2sPort = i2sPort;
     //install and start i2s driver
     i2s_driver_install(m_i2sPort, &i2sConfig, 4, &m_i2sQueue);

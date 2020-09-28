@@ -92,3 +92,8 @@ int WAVFileReader::getFrames(Frame_t *frames, int number_frames)
     }
     return number_frames;
 }
+
+bool WAVFileReader::available()
+{
+    return m_file.available() || m_repeat;
+}
