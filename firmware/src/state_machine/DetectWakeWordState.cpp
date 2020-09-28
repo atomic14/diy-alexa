@@ -12,12 +12,6 @@
 
 DetectWakeWordState::DetectWakeWordState(I2SSampler *sample_provider)
 {
-    // Create our neural network
-    m_nn = new NeuralNetwork();
-    Serial.println("Created Neral Net");
-    // create our audio processor
-    m_audio_processor = new AudioProcessor(AUDIO_LENGTH, WINDOW_SIZE, STEP_SIZE, POOLING_SIZE);
-    Serial.println("Created audio processor");
     // save the sample provider for use later
     m_sample_provider = sample_provider;
     // some stats on performance
@@ -25,7 +19,12 @@ DetectWakeWordState::DetectWakeWordState(I2SSampler *sample_provider)
 }
 void DetectWakeWordState::enterState()
 {
-    // nothing to do
+    // Create our neural network
+    m_nn = new NeuralNetwork();
+    Serial.println("Created Neral Net");
+    // create our audio processor
+    m_audio_processor = new AudioProcessor(AUDIO_LENGTH, WINDOW_SIZE, STEP_SIZE, POOLING_SIZE);
+    Serial.println("Created audio processor");
 }
 bool DetectWakeWordState::run()
 {
@@ -58,5 +57,11 @@ bool DetectWakeWordState::run()
 }
 void DetectWakeWordState::exitState()
 {
-    // nothing to do
+    // Create our neural network
+    delete m_nn;
+    m_nn = NULL;
+    delete m_audio_processor;
+    m_audio_processor = NULL;
+    uint32_t free_ram = esp_get_free_heap_size();
+    Serial.printf("Free ram after DetectWakeWord cleanup %d\n", free_ram);
 }
