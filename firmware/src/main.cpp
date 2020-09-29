@@ -19,7 +19,7 @@ i2s_config_t adcI2SConfig = {
     .communication_format = I2S_COMM_FORMAT_I2S_LSB,
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
     .dma_buf_count = 4,
-    .dma_buf_len = 64,
+    .dma_buf_len = 256,
     .use_apll = false,
     .tx_desc_auto_clear = false,
     .fixed_mclk = 0};
@@ -33,7 +33,7 @@ i2s_config_t i2sMemsConfigBothChannels = {
     .communication_format = i2s_comm_format_t(I2S_COMM_FORMAT_I2S),
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
     .dma_buf_count = 4,
-    .dma_buf_len = 64,
+    .dma_buf_len = 256,
     .use_apll = false,
     .tx_desc_auto_clear = false,
     .fixed_mclk = 0};
@@ -112,7 +112,7 @@ void setup()
 
   // set up the i2s sample writer task
   TaskHandle_t applicationTaskHandle;
-  xTaskCreate(applicationTask, "Application Task", 4096, application, 1, &applicationTaskHandle);
+  xTaskCreate(applicationTask, "Application Task", 8192, application, 1, &applicationTaskHandle);
 
   // start sampling from i2s device - use I2S_NUM_0 as that's the one that supports the internal ADC
 #ifdef USE_I2S_MIC_INPUT
@@ -124,5 +124,4 @@ void setup()
 
 void loop()
 {
-  vTaskDelay(1000);
 }

@@ -31,7 +31,7 @@ void indicatorLedTask(void *param)
                 while (indicator_light->getState() == PULSING)
                 {
                     ledcWrite(0, 255 * (0.5 * cos(angle) + 0.5));
-                    vTaskDelay(50 / portTICK_PERIOD_MS);
+                    vTaskDelay(100 / portTICK_PERIOD_MS);
                     angle += 0.4 * M_PI;
                 }
             }
