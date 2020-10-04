@@ -12,11 +12,11 @@ I would recommend using an I2S microphone if you have one as they have a lot bet
 
 My board is available on [eBay](https://www.ebay.co.uk/itm/154115095985) and [Tindie](https://www.tindie.com/products/atomic14/ics-43434-i2s-mems-microphone-breakout-board/)
 
-Other I2S microphones are equally suitable boards based around the INMP441 work very well.
+Other I2S microphones are equally suitable. Boards based around the INMP441 work very well.
 
 Wake word detection is carried out using a model trained with TensorFlow and runs on the ESP32 using TensorFlow Lite. A pre-trained model is included in the Firmware folder so you can get up and running straight away.
 
-Command recognition is carried using wit.ai - a free service from Facebook - I've included the access token for this in the code but will disable it in the near future.
+Command recognition is carried using wit.ai - a free service from Facebook - I've included the access token for this in the code but will disable it in the next few weeks.
 
 There are two folders in this repo `model` and `firmware` check the `README.md` file in each one for complete details.
 
