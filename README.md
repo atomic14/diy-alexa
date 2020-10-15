@@ -2,7 +2,7 @@
 
 Want to build your own Alexa? All you will need is an ESP32 and Microphone board.
 
-You can find a detailed tutorial in the [TUTORIAL.md](../blob/master/TUTORIAL.md) file and there's also a detailed tutorial video [here on YouTube](https://youtu.be/re-dSV_a0tM)
+You can find a detailed tutorial in the [TUTORIAL.md](../master/TUTORIAL.md) file and there's also a detailed tutorial video [here on YouTube](https://youtu.be/re-dSV_a0tM)
 
 [![Demo Video](https://img.youtube.com/vi/re-dSV_a0tM/0.jpg)](https://www.youtube.com/watch?v=re-dSV_a0tM)
 
