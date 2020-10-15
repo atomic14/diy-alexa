@@ -316,6 +316,8 @@ Once the model has been converted we can run a command-line tool to generate C c
 xxd -i converted_model.tflite > model_data.cc
 ```
 
+---
+
 ## Intent Recognition
 
 With our wake word detection model complete we now need to move onto something that can understand what the user is asking us to do.
@@ -428,6 +430,8 @@ For the audio sample above we get back:
 As you can see, it's worked out the intent "Turn_on_device", it's recognised the name of the device as "kitchen" and it's worked out that we want to turn the device "on".
 
 Pretty amazing!
+
+---
 
 ## Wiring it all up
 
@@ -587,6 +591,8 @@ Once we've streamed 3 seconds of samples we ask wit.ai what the user said. We co
 Wit.ai processes the audio and tells us what the user asked, we pass that onto our intent processor to interpret the request and move to the next state which will put us back into waiting for the wake word.
 
 Our intent processor simply looks at the intent name that wit.ai provides us and carries out the appropriate action.
+
+---
 
 ## What's next?
 
