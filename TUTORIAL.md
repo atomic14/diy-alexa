@@ -4,7 +4,7 @@ All the source code for this tutorial is in [GitHub](https://github.com/atomic14
 
 ## Introduction
 
-This tutorial will guide you through the process of creating your own DIY Alexa using the ESP32 and Wit.AI.
+This tutorial will guide you through the process of creating your own DIY Alexa using the ESP32 and Wit.ai.
 
 There's a full video tutorial to accompany this available here:
 
