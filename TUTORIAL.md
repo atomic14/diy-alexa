@@ -90,29 +90,14 @@ One of these words in particular looks like a good candidate for a wake word - I
 
 Here's a couple of samples of the word "Marvin":
 
-<audio controls="controls">
-  <source type="audio/wav" src="https://blog.cmgresearch.com/assets/marvin/marvin1.wav"></source>
-  <p>Your browser does not support the audio element.</p>
-</audio>
-<audio controls="controls">
-  <source type="audio/wav" src="https://blog.cmgresearch.com/assets/marvin/marvin2.wav"></source>
-  <p>Your browser does not support the audio element.</p>
-</audio>
+[Marvin1](https://blog.cmgresearch.com/assets/marvin/marvin1.wav)
+|[Marvin1](https://blog.cmgresearch.com/assets/marvin/marvin2.wav)
 
 And here's a few of the other random words from the dataset:
 
-<audio controls="controls">
-  <source type="audio/wav" src="https://blog.cmgresearch.com/assets/marvin/forward.wav"></source>
-  <p>Your browser does not support the audio element.</p>
-</audio>
-<audio controls="controls">
-  <source type="audio/wav" src="https://blog.cmgresearch.com/assets/marvin/left.wav"></source>
-  <p>Your browser does not support the audio element.</p>
-</audio>
-<audio controls="controls">
-  <source type="audio/wav" src="https://blog.cmgresearch.com/assets/marvin/right.wav"></source>
-  <p>Your browser does not support the audio element.</p>
-</audio>
+[Forward](https://blog.cmgresearch.com/assets/marvin/forward.wav)
+|[Left](https://blog.cmgresearch.com/assets/marvin/left.wav)
+|[Right](https://blog.cmgresearch.com/assets/marvin/right.wav)
 
 To augment the dataset you can also record ambient background noise, I recorded several hours of household noises and TV shows to provide a large amount of random data.
 
@@ -370,10 +355,7 @@ Once we are happy that Wit.ai is performing we can try it out with either text o
 
 Here's a sample piece of audio:
 
-<audio controls="controls">
-  <source type="audio/wav" src="https://blog.cmgresearch.com/assets/marvin/turn_on.wav"></source>
-  <p>Your browser does not support the audio element.</p>
-</audio>
+[Test Audio](https://blog.cmgresearch.com/assets/marvin/turn_on.wav)
 
 To send this file to Wit.ai we can use `curl` from the command line.
 
