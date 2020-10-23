@@ -50,7 +50,7 @@ A good environment for developing for the ESP32 is [Platform.io](https://platfor
 
 ### A microphone break out board
 
-I recommend using an I2S MEMS microphone board. These are very low noise microphones that can be connected directly to the ESP32 using a digital interface and require only a few wires. A good choice is either the INMP441 microphone (available from Amazon or eBay) or the ICS-43434 (available from [Tindie](https://www.tindie.com/products/21519/).
+I recommend using an I2S MEMS microphone board. These are very low noise microphones that can be connected directly to the ESP32 using a digital interface and require only a few wires. A good choice is either the INMP441 microphone (available from Amazon or eBay) or the ICS-43434 (available from [Tindie](https://www.tindie.com/products/21519/)).
 
 ![MEMS Microphone Board](https://blog.cmgresearch.com/assets/marvin/mems.jpg)
 
