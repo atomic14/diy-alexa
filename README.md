@@ -71,7 +71,7 @@ python --version
 or
 
 ```
-pythong3 --version
+python3 --version
 ```
 
 If you need to install Python 3 please follow the instructions [here](https://www.python.org/).
@@ -145,7 +145,7 @@ def get_spectrogram(audio):
     return spectrogram
 ```
 
-This function first normalised the audio sample to remove any variance in volume in our samples. It then computes the spectrogram - there is quite a lot of data in the spectrogram so we reduce this by applying average pooling.
+This function first normalises the audio sample to remove any variance in volume in our samples. It then computes the spectrogram - there is quite a lot of data in the spectrogram so we reduce this by applying average pooling.
 
 We finally take the log of the spectrogram so that we don't feed extreme values into our neural network which might make it harder to train.
 
@@ -307,7 +307,7 @@ xxd -i converted_model.tflite > model_data.cc
 
 With our wake word detection model complete we now need to move onto something that can understand what the user is asking us to do.
 
-For this, we will use the Wit.ai service from Facebook. This service will "Turn What Your Users Say Into Actions".
+For this, we will use the [Wit.ai](https://wit.ai) service from Facebook. This service will "Turn What Your Users Say Into Actions".
 
 ![Wit.ai Landing Page](https://blog.cmgresearch.com/assets/marvin/witai.png)
 
@@ -331,7 +331,7 @@ For our project we want to be able to turn devices on and off. Some sample phras
 
 We feed these phrases into Wit.ai - for the first phrase we enter we'll create a new intent "Turn_on_device".
 
-As we add more phrases we'll assign them to this new intent. As we give Wit.ai more examples it will learn what kind of phrase should map onto the same intent. In the future when it sees a new phrase it has never seen before - e.g. "Turn on the table" it will be able to recognise that this phrase should belong to the Turn_on_device intent.
+As we add more phrases we'll assign them to this new intent. As we give [Wit.ai](https://wit.ai) more examples it will learn what kind of phrase should map onto the same intent. In the future when it sees a new phrase it has never seen before - e.g. "Turn on the table" it will be able to recognise that this phrase should belong to the Turn_on_device intent.
 
 ![Wit.ai Create Intent](https://blog.cmgresearch.com/assets/marvin/create_intent.png)
 
@@ -347,11 +347,11 @@ Finally we want to be able detect what the user is trying to do to the device. F
 
 ![Wit.ai Entity](https://blog.cmgresearch.com/assets/marvin/trait.png)
 
-Once we've trained Wit.ai on a few sample phrases it will start to automatically recognise the Intent, Entity and Trait. If it fails to recognise any of these then you can tell it what it should have done and it will correct itself.
+Once we've trained [Wit.ai](https://wit.ai)  on a few sample phrases it will start to automatically recognise the Intent, Entity and Trait. If it fails to recognise any of these then you can tell it what it should have done and it will correct itself.
 
 ![Wit.ai Entity](https://blog.cmgresearch.com/assets/marvin/trained.png)
 
-Once we are happy that Wit.ai is performing we can try it out with either text or audio files and see how it performs on real audio.
+Once we are happy that [Wit.ai](https://wit.ai) is performing we can try it out with either text or audio files and see how it performs on real audio.
 
 Here's a sample piece of audio:
 
@@ -531,7 +531,7 @@ for (int i = 0; i < m_pooled_energy_size; i++)
 
 This gives us the set of features that our neural network is expecting to see.
 
-Finally we have the code for talking to Wit.ai. To avoid having to buffer the entire audio sample in memory we need to perform a chunked upload of the data.
+Finally we have the code for talking to [Wit.ai](https://wit.ai). To avoid having to buffer the entire audio sample in memory we need to perform a chunked upload of the data.
 
 We create the connection to wit.ai and then upload the chunks of data until we've collected sufficient audio data to capture the user's command.
 
@@ -546,7 +546,7 @@ m_wifi_client->println("transfer-encoding: chunked");
 m_wifi_client->println();
 ```
 
-We decode the results from wit.ai and extract the pieces of information that we are interested in - we care about the intent, the device and whether the users wants to turn the device on or off.
+We decode the results from [Wit.ai](https://wit.ai) and extract the pieces of information that we are interested in - we care about the intent, the device and whether the users wants to turn the device on or off.
 
 ```c++
 const char *text = doc["text"];
@@ -570,7 +570,7 @@ We then start streaming samples up to the server - to allow for the SSL connecti
 
 Once we've streamed 3 seconds of samples we ask wit.ai what the user said. We could get more clever here and wait until the user has stopped speaking.
 
-Wit.ai processes the audio and tells us what the user asked, we pass that onto our intent processor to interpret the request and move to the next state which will put us back into waiting for the wake word.
+[Wit.ai](https://wit.ai) processes the audio and tells us what the user asked, we pass that onto our intent processor to interpret the request and move to the next state which will put us back into waiting for the wake word.
 
 Our intent processor simply looks at the intent name that wit.ai provides us and carries out the appropriate action.
 
@@ -590,4 +590,4 @@ Accuracy is ok. We need more training data to make it really robust, you can eas
 
 You may want to try changing the wake word for a different one or using your own audio samples to train the neural network.
 
-The Wit.ai system works very well and you can easily add your own intents and traits to build a very powerful system. I've added additional intents to my own project to tell me jokes and you could easily hook the system up to a weather forecast service if you wanted to.
+The [Wit.ai](https://wit.ai) system works very well and you can easily add your own intents and traits to build a very powerful system. I've added additional intents to my own project to tell me jokes and you could easily hook the system up to a weather forecast service if you wanted to.
