@@ -1,3 +1,4 @@
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z734F5Y)
 # DIY Alexa With the ESP32 and Wit.AI
 
 All the source code for this tutorial is in [GitHub](https://github.com/atomic14/diy-alexa)
