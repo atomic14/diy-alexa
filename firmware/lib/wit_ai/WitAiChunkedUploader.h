@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <string>
 
-class WiFiClient;
+class WiFiClientSecure;
 
 typedef struct
 {
@@ -20,7 +20,7 @@ typedef struct
 class WitAiChunkedUploader
 {
 private:
-    WiFiClient *m_wifi_client;
+    WiFiClientSecure *m_wifi_client;
 
 public:
     WitAiChunkedUploader(const char *access_key);

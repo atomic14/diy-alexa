@@ -1,10 +1,11 @@
 #include "WitAiChunkedUploader.h"
-#include <WiFiClientSecure.h>
+#include "WiFiClientSecure.h"
 #include <ArduinoJson.h>
 
 WitAiChunkedUploader::WitAiChunkedUploader(const char *access_key)
 {
     m_wifi_client = new WiFiClientSecure();
+    m_wifi_client->setInsecure();
     m_wifi_client->connect("api.wit.ai", 443);
     char authorization_header[100];
     snprintf(authorization_header, 100, "authorization: Bearer %s", access_key);

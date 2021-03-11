@@ -17,19 +17,22 @@ limitations under the License.
 
 #include <cmath>
 
-namespace tflite {
+namespace tflite
+{
 
 #if defined(TF_LITE_USE_GLOBAL_MAX) || defined(__ZEPHYR__)
-inline float TfLiteMax(const float& x, const float& y) {
-  return std::max(x, y);
-}
+  inline float TfLiteMax(const float &x, const float &y)
+  {
+    return std::max(x, y);
+  }
 #else
-template <class T>
-inline T TfLiteMax(const T& x, const T& y) {
-  return std::fmax(x, y);
-}
+  template <class T>
+  inline T TfLiteMax(const T &x, const T &y)
+  {
+    return std::max(x, y);
+  }
 #endif
 
-}  // namespace tflite
+} // namespace tflite
 
-#endif  // TENSORFLOW_LITE_KERNELS_INTERNAL_MAX_H_
+#endif // TENSORFLOW_LITE_KERNELS_INTERNAL_MAX_H_
