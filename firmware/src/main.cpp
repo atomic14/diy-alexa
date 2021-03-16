@@ -100,7 +100,7 @@ void setup()
   I2SSampler *i2s_sampler = new I2SMicSampler(i2s_mic_pins, false);
 #else
   // Use the internal ADC
-  I2SSampler *i2sSampler = new ADCSampler(ADC_UNIT_1, ADC_MIC_CHANNEL);
+  I2SSampler *i2s_sampler = new ADCSampler(ADC_UNIT_1, ADC_MIC_CHANNEL);
 #endif
 
   // start the i2s speaker output
@@ -128,7 +128,7 @@ void setup()
 #ifdef USE_I2S_MIC_INPUT
   i2s_sampler->start(I2S_NUM_0, i2sMemsConfigBothChannels, applicationTaskHandle);
 #else
-  i2sSampler->start(I2S_NUM_0, adcI2SConfig, applicationTaskHandle);
+  i2s_sampler->start(I2S_NUM_0, adcI2SConfig, applicationTaskHandle);
 #endif
 }
 
