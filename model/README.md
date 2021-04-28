@@ -30,7 +30,7 @@ We make use of the speech commands dataset available from here:
 Download and then expand the data using:
 
 ```
-mkdir speed_data
+mkdir speech_data
 tar -xzf data_speech_commands_v0.02.tar.gz -C speech_data
 ```
 
