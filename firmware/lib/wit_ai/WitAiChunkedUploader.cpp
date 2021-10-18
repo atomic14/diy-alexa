@@ -83,7 +83,7 @@ Intent WitAiChunkedUploader::getResults()
 
         const char *text = doc["text"];
         const char *intent_name = doc["intents"][0]["name"];
-        float intent_confidence = doc["entities"]["device:device"][0]["confidence"];
+        float intent_confidence = doc["intents"][0]["confidence"];
         const char *device_name = doc["entities"]["device:device"][0]["value"];
         float device_confidence = doc["entities"]["device:device"][0]["confidence"];
         const char *trait_value = doc["traits"]["wit$on_off"][0]["value"];
