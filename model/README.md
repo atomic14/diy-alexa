@@ -27,9 +27,10 @@ We make use of the speech commands dataset available from here:
 
 [https://storage.cloud.google.com/download.tensorflow.org/data/speech_commands_v0.02.tar.gz](https://storage.cloud.google.com/download.tensorflow.org/data/speech_commands_v0.02.tar.gz)
 
-Download and expand the data using:
+Download and then expand the data using:
 
 ```
+mkdir speech_data
 tar -xzf data_speech_commands_v0.02.tar.gz -C speech_data
 ```
 

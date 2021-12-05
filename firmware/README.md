@@ -4,6 +4,16 @@ This folder contains the firmware for running DIY Alexa on the ESP32.
 
 We are using Platform.io to build the firmware.
 
+If you're having problems detecting the wakeword `Marvin` then you can try lowering the detection threshold:
+
+`/src/state_machine/DetectWakeWordState.cpp` line 59.
+
+```
+if (output > 0.95)
+```
+
+Change 0.95 to something lower and you will increase the sensitivity. It's also worth logging this value out if you are having problems so you can see how well the detector is picking up the work.
+
 To understand the code the best place to start is `src/Application.cpp`. This is a very simple state machine that switched between either waiting for a wake word or trying to interpret the user's command.
 
 From there you can look at `src/state_machine/DetectWakeWordState.cpp' and `src/state_machine/RecogniseCommandState.cpp`.
