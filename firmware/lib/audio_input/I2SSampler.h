@@ -1,7 +1,7 @@
 #ifndef __sampler_base_h__
 #define __sampler_base_h__
-#include <FreeRTOS/FreeRTOS.h>
-#include <FreeRTOS/task.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include <driver/i2s.h>
 #include <algorithm>
 
