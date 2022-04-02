@@ -40,6 +40,12 @@ I also tried to eliminate confusion between other words that start with `Mar` an
 
 You can remove this from the training data if you don't have this available.
 
+I've uploaded the data to here if you do want to use it:
+
+[\_mar_sounds\_.zip](https://data.atomic14.com/_mar_sounds_.zip)
+[\_background\_noise\_.zip](https://data.atomic14.com/_background_noise_.zip)
+[\_problem_noise\_.zip](https://data.atomic14.com/_problem_noise_.zip)
+
 The notebook will run through all these samples and output files for the training step. You will need about 4GB of free space to save these files.
 
 ## Tain Model.ipynb
