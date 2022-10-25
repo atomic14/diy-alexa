@@ -48,7 +48,7 @@ I've uploaded the data to here if you do want to use it:
 
 The notebook will run through all these samples and output files for the training step. You will need about 4GB of free space to save these files.
 
-## Tain Model.ipynb
+## Train Model.ipynb
 
 This will train a model against the training data. This will train on a CPU in 1-2 hours. If you have a suitable GPU this training will be considerably faster.
 
